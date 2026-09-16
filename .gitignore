@@ -1,0 +1,70 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+.pnp
+.pnp.js
+
+# ==========================================
+# Production Build Outputs
+# ==========================================
+dist/
+dist-ssr/
+*.local
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.keystore
+*.jks
+
+# ==========================================
+# Logs & Diagnostics
+# ==========================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# OS & Editor Files
+# ==========================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# VS Code & JetBrains IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+*.sublime-project
+
+# ==========================================
+# Android & Gradle Build Artifacts
+# ==========================================
+android/.gradle/
+android/build/
+android/app/build/
+android/.idea/
+android/local.properties
+android/captures/
+android/.cxx/
+android/*.iml
+android/app/*.iml
+android/app/build/outputs/apk/
+
+# Temporary / Cache Files
+.cache/
+.parcel-cache/
+.temp/
