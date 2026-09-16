@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Zyp</string>
+    <string name="title_activity_main">Zyp</string>
+    <string name="package_name">com.vdown.pro</string>
+    <string name="custom_url_scheme">com.vdown.pro</string>
+</resources>
