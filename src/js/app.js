@@ -127,9 +127,12 @@ async function syncStatusBar(resolvedTheme = currentThemeMode) {
   // Native Android StatusBar plugin
   if (StatusBarPlugin && StatusBarPlugin.StatusBar) {
     try {
+      if (typeof StatusBarPlugin.StatusBar.setOverlaysWebView === 'function') {
+        await StatusBarPlugin.StatusBar.setOverlaysWebView({ overlay: false });
+      }
       await StatusBarPlugin.StatusBar.setBackgroundColor({ color });
       await StatusBarPlugin.StatusBar.setStyle({
-        style: isDarkBg ? StatusBarPlugin.Style.Light : StatusBarPlugin.Style.Dark
+        style: isDarkBg ? StatusBarPlugin.Style.Dark : StatusBarPlugin.Style.Light
       });
     } catch (err) {
       // Ignored if unsupported on device

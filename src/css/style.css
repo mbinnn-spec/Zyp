@@ -92,8 +92,8 @@
 }
 
 [data-theme="amoled"] .app-header {
-  background: rgba(0, 0, 0, 0.92);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
+  background: transparent !important;
+  border-bottom: none !important;
 }
 
 [data-theme="amoled"] .sheet-card {
@@ -145,8 +145,8 @@
 }
 
 [data-theme="light"] .app-header {
-  background: rgba(255, 255, 255, 0.94);
-  border-bottom-color: rgba(0, 0, 0, 0.08);
+  background: transparent !important;
+  border-bottom: none !important;
 }
 
 [data-theme="light"] .brand-text h1 {
@@ -759,7 +759,7 @@ body {
 .input-header label {
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--text-tertiary);
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 1px;
   white-space: nowrap;
@@ -2409,52 +2409,171 @@ body {
 .clip-banner-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 2px;
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
 }
 
 .clip-btn-secondary {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: var(--text-secondary);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  padding: 7px 14px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
+  user-select: none;
 }
 
 .clip-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.10);
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.20);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.clip-btn-secondary:active {
+  transform: scale(0.98);
 }
 
 .clip-btn-primary {
+  flex: 1.5;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 7px;
   background: #ffffff;
   color: #000000;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  padding: 7px 16px;
+  padding: 10px 16px;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.12);
+}
+
+.clip-btn-primary svg {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  flex-shrink: 0;
+  stroke-width: 2.2;
+}
+
+.clip-btn-primary span {
+  white-space: nowrap;
 }
 
 .clip-btn-primary:hover {
   background: #e5e5e5;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 .clip-btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
+
+@media (max-width: 360px) {
+  .clip-banner-inner {
+    padding: 12px 12px;
+  }
+  .clip-banner-actions {
+    gap: 8px;
+  }
+  .clip-btn-secondary {
+    padding: 9px 10px;
+    font-size: 0.78rem;
+  }
+  .clip-btn-primary {
+    padding: 9px 12px;
+    font-size: 0.8rem;
+    gap: 5px;
+  }
+  .clip-btn-primary svg {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+  }
+}
+
+/* Clipboard Auto-Detect Banner — Light Mode */
+[data-theme="light"] .clip-banner-inner {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .clip-pulse {
+  background: #0f172a;
+  box-shadow: 0 0 8px rgba(15, 23, 42, 0.4);
+}
+
+[data-theme="light"] .clip-platform-badge {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+[data-theme="light"] .clip-header-title {
+  color: #475569;
+}
+
+[data-theme="light"] .clip-btn-close {
+  color: #64748b;
+}
+
+[data-theme="light"] .clip-btn-close:hover {
+  color: #0f172a;
+}
+
+[data-theme="light"] .clip-url-box {
+  background: #f8fafc;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .clip-link-icon {
+  stroke: #64748b;
+}
+
+[data-theme="light"] .clip-url-text {
+  color: #1e293b;
+}
+
+[data-theme="light"] .clip-btn-secondary {
+  background: #f1f5f9;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  color: #334155;
+}
+
+[data-theme="light"] .clip-btn-secondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="light"] .clip-btn-primary {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
+}
+
+[data-theme="light"] .clip-btn-primary:hover {
+  background: #1e293b;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.3);
+}
+
+
 
 /* ==========================================================================
    Secret Vault Settings Modal — Monochrome Modern
