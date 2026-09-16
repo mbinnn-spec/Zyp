@@ -76,6 +76,7 @@ export function detectPlatform(url) {
   }
   if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
   if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
+  if (lower.includes('spotify.com') || lower.includes('spotify.link')) return 'spotify';
   if (lower.includes('facebook.com') || lower.includes('fb.watch') || lower.includes('fb.com')) return 'facebook';
   if (lower.includes('pinterest.com') || lower.includes('pin.it')) return 'pinterest';
   return 'universal';
@@ -87,10 +88,16 @@ export function detectPlatform(url) {
 export function cleanMediaUrl(rawUrl) {
   try {
     const u = new URL(rawUrl.trim());
-    if (u.hostname.includes('instagram.com') || u.hostname.includes('twitter.com') || u.hostname.includes('x.com')) {
-      return `${u.origin}${u.pathname}`;
+    if (
+      u.hostname.includes('instagram.com') ||
+      u.hostname.includes('twitter.com') ||
+      u.hostname.includes('x.com') ||
+      u.hostname.includes('spotify.com')
+    ) {
+      u.search = '';
+      return u.toString();
     }
-    return rawUrl.trim();
+    return `${u.origin}${u.pathname}`;
   } catch (e) {
     return rawUrl ? rawUrl.trim() : '';
   }
@@ -956,6 +963,200 @@ export async function extractYouTube(url) {
   }
 
   throw new Error('Gagal mengekstrak video YouTube. Pastikan tautan masih aktif dan publik.');
+}
+
+/**
+ * Extract Spotify Track ID from any Spotify URL
+ */
+export function extractSpotifyTrackId(url) {
+  if (!url || typeof url !== 'string') return null;
+  const m = url.match(/(?:spotify\.com\/(?:[a-z]{2}(?:-[a-zA-Z]{2})?\/)?track\/|spotify:track:)([a-zA-Z0-9]{22})/i);
+  return m ? m[1] : null;
+}
+
+/**
+ * Extract Spotify Track (Full MP3 Music, Instant Preview Audio, and Album Cover Art)
+ */
+export async function extractSpotify(url) {
+  let targetUrl = url.trim();
+
+  // Handle spotify.link shortlinks
+  if (targetUrl.includes('spotify.link/')) {
+    try {
+      const resp = await safeHttp(targetUrl);
+      const html = await resp.text();
+      const trackMatch = html.match(/https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]{22})/);
+      if (trackMatch) {
+        targetUrl = trackMatch[0];
+      }
+    } catch (e) {
+      console.warn('Spotify shortlink resolve error:', e);
+    }
+  }
+
+  const trackId = extractSpotifyTrackId(targetUrl);
+  if (!trackId) {
+    throw new Error('Tautan Spotify tidak valid. Pastikan Anda menyalin tautan lagu (Track) dari Spotify.');
+  }
+
+  // 1. Fetch Official Spotify Embed Metadata & Audio Preview
+  let entity = null;
+  try {
+    const embedRes = await safeHttp(`https://open.spotify.com/embed/track/${trackId}`);
+    if (embedRes.ok) {
+      const embedHtml = await embedRes.text();
+      const nextMatch = embedHtml.match(/id="__NEXT_DATA__"[^>]*>([^<]+)<\/script>/);
+      if (nextMatch) {
+        const nextData = JSON.parse(nextMatch[1]);
+        entity = nextData?.props?.pageProps?.state?.data?.entity;
+      }
+    }
+  } catch (err) {
+    console.warn('Spotify embed fetch error:', err);
+  }
+
+  // 2. Fetch OEmbed for High-Res Thumbnail Fallback
+  let coverArtUrl = null;
+  let oembedTitle = null;
+  try {
+    const oRes = await safeHttp(`https://open.spotify.com/oembed?url=https://open.spotify.com/track/${trackId}`);
+    if (oRes.ok) {
+      const oData = await oRes.json();
+      coverArtUrl = oData.thumbnail_url || null;
+      oembedTitle = oData.title || null;
+    }
+  } catch (err) {
+    console.warn('Spotify oEmbed fetch error:', err);
+  }
+
+  const songTitle = entity?.name || oembedTitle || 'Lagu Spotify';
+  const artistName = Array.isArray(entity?.artists)
+    ? entity.artists.map(a => a.name).join(', ')
+    : 'Artis Spotify';
+  const durationMs = entity?.duration || 0;
+  const durationSec = Math.round(durationMs / 1000);
+  const previewAudioUrl = entity?.audioPreview?.url || null;
+
+  // Cover image from entity or oembed
+  if (!coverArtUrl && entity?.coverArt?.sources?.length > 0) {
+    coverArtUrl = entity.coverArt.sources[0].url;
+  }
+
+  let fullMp3Url = null;
+
+  // 3. Search and match full song audio via music search
+  try {
+    const cleanSearchQuery = `${artistName} ${songTitle}`.replace(/[^a-zA-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    const searchUrl = `https://api.piped.private.coffee/search?q=${encodeURIComponent(cleanSearchQuery)}&filter=music_songs`;
+    const searchRes = await safeHttp(searchUrl);
+    if (searchRes.ok) {
+      const searchData = await searchRes.json();
+      const topMatch = Array.isArray(searchData?.items) ? searchData.items[0] : null;
+      const ytVideoId = topMatch?.url ? topMatch.url.replace('/watch?v=', '') : null;
+
+      if (ytVideoId) {
+        // Convert to Full MP3 using loader.to engine
+        const initRes = await safeHttp(`https://loader.to/ajax/download.php?format=mp3&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${ytVideoId}`)}`);
+        if (initRes.ok) {
+          const initData = await initRes.json();
+          if (initData && (initData.download_url || initData.id)) {
+            fullMp3Url = initData.download_url;
+            if (!fullMp3Url && initData.id) {
+              const progressUrl = initData.progress_url || `https://lto2.affadaffa.com/api/progress?id=${initData.id}`;
+              for (let i = 0; i < 14; i++) {
+                await new Promise(r => setTimeout(r, 1200));
+                const pRes = await safeHttp(progressUrl);
+                if (pRes.ok) {
+                  const pData = await pRes.json();
+                  if (pData.download_url) {
+                    fullMp3Url = pData.download_url;
+                    break;
+                  }
+                  if (pData.success === 0 && pData.text?.toLowerCase().includes('error')) {
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (searchErr) {
+    console.warn('Spotify full song match error:', searchErr);
+  }
+
+  // Fallback: If full MP3 converter was busy, check if audioPreview exists
+  if (!fullMp3Url && !previewAudioUrl) {
+    throw new Error(`Gagal mengekstrak lagu "${songTitle}". Pastikan lagu tersedia di Spotify dan publik.`);
+  }
+
+  const formats = [];
+
+  // Full Song MP3 Format
+  if (fullMp3Url) {
+    formats.push({
+      id: 'spotify_full_mp3',
+      label: `Lagu Lengkap MP3 (Kualitas Terbaik)`,
+      badge: 'FULL MP3',
+      type: 'audio',
+      url: fullMp3Url,
+      thumb: coverArtUrl,
+      ext: 'mp3',
+      recommended: true
+    });
+  }
+
+  // Official Spotify 30-second Preview Audio
+  if (previewAudioUrl) {
+    formats.push({
+      id: 'spotify_preview_mp3',
+      label: `Audio Preview Resmi (30 Detik Cepat)`,
+      badge: 'PREVIEW MP3',
+      type: 'audio',
+      url: previewAudioUrl,
+      thumb: coverArtUrl,
+      ext: 'mp3',
+      recommended: !fullMp3Url
+    });
+  }
+
+  // Cover Album Artwork
+  if (coverArtUrl) {
+    formats.push({
+      id: 'spotify_cover_hd',
+      label: 'Gambar Sampul Album HD',
+      badge: 'COVER HD',
+      type: 'image',
+      url: coverArtUrl,
+      thumb: coverArtUrl,
+      ext: 'jpg',
+      recommended: false
+    });
+  }
+
+  const durationFormatted = durationSec > 0
+    ? `${Math.floor(durationSec / 60)}:${String(durationSec % 60).padStart(2, '0')}`
+    : null;
+
+  return {
+    success: true,
+    platform: 'spotify',
+    title: `${songTitle} - ${artistName}`,
+    author: {
+      name: artistName,
+      username: 'Spotify Track',
+      avatar: coverArtUrl
+    },
+    thumbnail: coverArtUrl,
+    previewVideo: null,
+    audioUrl: previewAudioUrl || fullMp3Url,
+    duration: durationFormatted,
+    isPhotos: false,
+    isAudio: true,
+    images: [],
+    formats: formats
+  };
 }
 
 /**

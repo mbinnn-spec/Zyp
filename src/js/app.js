@@ -1,4 +1,5 @@
-import { extractTikTok, extractInstagram, extractTerabox, extractTwitter, extractYouTube, extractUniversal, detectPlatform } from './extractors.js';
+import { extractTikTok, extractInstagram, extractTerabox, extractTwitter, extractYouTube, extractSpotify, extractUniversal, detectPlatform } from './extractors.js';
+
 
 // Capacitor Plugins (Loaded safely with fallback for Web preview)
 let ClipboardPlugin = null;
@@ -609,6 +610,7 @@ function handleInputChange() {
         terabox: 'PRIVATE CLOUD',
         youtube: 'YOUTUBE',
         twitter: 'TWITTER',
+        spotify: 'SPOTIFY',
         facebook: 'FACEBOOK',
         pinterest: 'PINTEREST'
       };
@@ -760,6 +762,8 @@ async function startBatchProcess() {
       iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.65a6.34 6.34 0 0 0 10.86 4.49 6.27 6.27 0 0 0 1.83-4.49V8.9a8.18 8.18 0 0 0 4.78 1.52V7a4.85 4.85 0 0 1-.88-.31z"/></svg>`;
     } else if (platform === 'instagram') {
       iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`;
+    } else if (platform === 'spotify') {
+      iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.208-2.348-1.435-5.304-1.76-8.785-.964-.333.076-.665-.13-.742-.464-.076-.334.13-.666.464-.742 3.808-.87 7.076-.496 9.712 1.115.294.18.386.563.208.847zm1.225-2.723c-.226.368-.71.482-1.077.256-2.687-1.652-6.785-2.131-9.965-1.166-.413.126-.85-.107-.975-.52-.126-.414.107-.851.52-.976 3.632-1.103 8.147-.568 11.24 1.33.368.226.483.71.257 1.076zm.105-2.836C14.693 8.948 9.387 8.77 6.304 9.707c-.494.15-1.02-.13-1.17-.624-.15-.494.13-1.02.624-1.17 3.532-1.072 9.404-.866 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.282.327z"/></svg>`;
     } else {
       iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>`;
     }
@@ -809,6 +813,8 @@ async function startBatchProcess() {
         data = await extractTwitter(cleanUrl);
       } else if (current.platform === 'youtube') {
         data = await extractYouTube(cleanUrl);
+      } else if (current.platform === 'spotify') {
+        data = await extractSpotify(cleanUrl);
       } else if (current.platform === 'terabox') {
         data = await extractTerabox(cleanUrl);
       } else {
@@ -912,6 +918,8 @@ async function handleFetch() {
       data = await extractTwitter(cleanUrl);
     } else if (platform === 'youtube') {
       data = await extractYouTube(cleanUrl);
+    } else if (platform === 'spotify') {
+      data = await extractSpotify(cleanUrl);
     } else if (platform === 'terabox') {
       data = await extractTerabox(cleanUrl);
     } else {
@@ -924,7 +932,7 @@ async function handleFetch() {
 
     currentExtraction = data;
     renderResult(data);
-    showToast('Video berhasil dimuat!');
+    showToast(data.isAudio || data.platform === 'spotify' ? 'Musik Spotify berhasil dimuat!' : 'Media berhasil dimuat!');
   } catch (err) {
     console.error('Extraction error:', err);
     showError(err.message || 'Gagal mengekstrak video. Pastikan link aktif & publik.');
@@ -939,7 +947,7 @@ function renderResult(data) {
   resAuthorName.textContent = data.author?.name || 'Creator';
   resAuthorUser.textContent = data.author?.username || '';
   if (data.author?.avatar) {
-    resAvatar.innerHTML = `<img src="${data.author.avatar}" alt="Avatar" />`;
+    resAvatar.innerHTML = `<img src="${data.author.avatar}" alt="Avatar" referrerpolicy="no-referrer" />`;
   } else {
     resAvatar.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
   }
@@ -1179,7 +1187,10 @@ async function startDownload(format, parentData, silent = false) {
   
   // Use original filename if available (especially for TeraBox ZIP / documents / media)
   let filename;
-  if (parentData.title && /\.[a-zA-Z0-9]{2,6}$/.test(parentData.title.trim())) {
+  if (parentData.platform === 'spotify' && parentData.title) {
+    const cleanTitle = parentData.title.replace(/[\\/:*?"<>|]/g, '_').trim();
+    filename = `${cleanTitle}.${ext}`;
+  } else if (parentData.title && /\.[a-zA-Z0-9]{2,6}$/.test(parentData.title.trim())) {
     filename = parentData.title.trim().replace(/[\\/:*?"<>|]/g, '_');
   } else {
     filename = `Zyp_${(parentData.platform || 'media').toUpperCase()}_${Date.now()}.${ext}`;
@@ -1910,6 +1921,7 @@ function showClipboardBanner(url, platform) {
     terabox: 'PRIVATE CLOUD',
     youtube: 'YOUTUBE',
     twitter: 'TWITTER',
+    spotify: 'SPOTIFY',
     facebook: 'FACEBOOK',
     pinterest: 'PINTEREST'
   };
