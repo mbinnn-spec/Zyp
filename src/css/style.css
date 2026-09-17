@@ -1,56 +1,56 @@
 /* ==========================================================================
-   VDown — Monochrome Elegance Design System
-   Premium black & white aesthetic with subtle depth
+   VDown — Threads-Inspired Design System
+   Clean, flat, minimal dark aesthetic inspired by Meta Threads
    ========================================================================== */
 
 :root {
-  /* Monochrome Palette */
-  --bg-base: #0a0a0a;
-  --bg-surface: rgba(255, 255, 255, 0.04);
-  --bg-card: rgba(255, 255, 255, 0.06);
-  --bg-card-hover: rgba(255, 255, 255, 0.10);
-  --bg-input: rgba(0, 0, 0, 0.50);
+  /* Threads Dark Palette */
+  --bg-base: #000000;
+  --bg-surface: #0a0a0a;
+  --bg-card: #181818;
+  --bg-card-hover: #212121;
+  --bg-input: #0a0a0a;
 
-  --border-glass: rgba(255, 255, 255, 0.08);
-  --border-active: rgba(255, 255, 255, 0.25);
-  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-glass: #2e2e2e;
+  --border-active: #4a4a4a;
+  --border-subtle: #1e1e1e;
 
-  /* Accent — Subtle cool white/silver only */
+  /* Accent — Clean white like Threads */
   --accent: #ffffff;
-  --accent-dim: rgba(255, 255, 255, 0.60);
-  --accent-muted: rgba(255, 255, 255, 0.15);
-  --accent-glow: rgba(255, 255, 255, 0.08);
-  --accent-text: #0a0a0a;
+  --accent-dim: rgba(255, 255, 255, 0.70);
+  --accent-muted: rgba(255, 255, 255, 0.08);
+  --accent-glow: rgba(255, 255, 255, 0.05);
+  --accent-text: #000000;
 
-  /* Status colors — Muted */
-  --success: #a3a3a3;
-  --error: #dc2626;
-  --error-bg: rgba(220, 38, 38, 0.10);
-  --error-border: rgba(220, 38, 38, 0.25);
+  /* Status colors */
+  --success: #4cd964;
+  --error: #ff3b30;
+  --error-bg: rgba(255, 59, 48, 0.10);
+  --error-border: rgba(255, 59, 48, 0.25);
 
-  /* Text */
-  --text-primary: #f5f5f5;
-  --text-secondary: #a3a3a3;
-  --text-tertiary: #636363;
-  --text-ghost: #404040;
+  /* Text — Threads-style hierarchy */
+  --text-primary: #f3f5f7;
+  --text-secondary: #999999;
+  --text-tertiary: #666666;
+  --text-ghost: #444444;
 
-  /* Shadows & Effects */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.40);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.50);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.60);
-  --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.04);
+  /* Shadows — Minimal, flat */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.50);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.60);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.80);
+  --shadow-glow: none;
 
-  /* Radii */
+  /* Radii — Threads uses moderate rounding */
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Typography */
-  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography — System font stack like Threads */
+  --font-heading: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-sf: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
 
   /* Spacing rhythm */
@@ -66,24 +66,24 @@
    ========================================================================== */
 [data-theme="amoled"] {
   --bg-base: #000000;
-  --bg-surface: #070707;
-  --bg-card: #0a0a0a;
-  --bg-card-hover: #121212;
+  --bg-surface: #000000;
+  --bg-card: #000000;
+  --bg-card-hover: #0a0a0a;
   --bg-input: #000000;
 
-  --border-glass: rgba(255, 255, 255, 0.12);
-  --border-active: rgba(255, 255, 255, 0.35);
-  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glass: #1a1a1a;
+  --border-active: #333333;
+  --border-subtle: #111111;
 
   --text-primary: #ffffff;
-  --text-secondary: #a3a3a3;
-  --text-tertiary: #737373;
-  --text-ghost: #404040;
+  --text-secondary: #999999;
+  --text-tertiary: #666666;
+  --text-ghost: #333333;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.85);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.95);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 1);
-  --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.02);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-glow: none;
 }
 
 [data-theme="amoled"] body {
@@ -510,18 +510,13 @@ body {
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.5;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   justify-content: center;
   overflow-x: hidden;
-
-  /* Subtle monochrome radial depth - very faint */
-  background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
-  background-attachment: fixed;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
@@ -557,16 +552,15 @@ body {
 }
 
 .brand-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
   background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent-text);
-  box-shadow: 0 0 20px var(--accent-glow);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.2s ease;
 }
 
 .brand-icon:active {
@@ -586,23 +580,22 @@ body {
 
 .brand-text h1 {
   font-family: var(--font-heading);
-  font-size: 1.65rem;
-  font-weight: 800;
-  letter-spacing: -0.8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
   color: #fff;
 }
 
 .brand-badge {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 0.6rem;
-  font-weight: 800;
-  padding: 2.5px 8px;
-  background: var(--accent-muted);
-  border: 1px solid var(--accent-dim);
-  color: var(--accent);
+  font-weight: 600;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
   border-radius: var(--radius-full);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 .header-actions {
@@ -612,9 +605,9 @@ body {
 }
 
 .icon-btn {
-  background: var(--bg-surface);
+  background: transparent;
   border: 1px solid var(--border-glass);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   width: 42px;
   height: 42px;
   border-radius: var(--radius-md);
@@ -623,18 +616,17 @@ body {
   justify-content: center;
   cursor: pointer;
   position: relative;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
 }
 
 .icon-btn:hover {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   background: var(--bg-card);
   border-color: var(--border-active);
 }
 
 .icon-btn:active {
-  transform: scale(0.90);
+  transform: scale(0.92);
   color: var(--text-primary);
   background: var(--bg-card-hover);
 }
@@ -680,19 +672,18 @@ body {
 .platform-pill {
   flex-shrink: 0;
   padding: 8px 16px;
-  background: var(--bg-surface);
+  background: transparent;
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-full);
   color: var(--text-tertiary);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 7px;
   cursor: pointer;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
-  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
+  letter-spacing: 0;
 }
 
 .platform-pill .dot {
@@ -738,12 +729,10 @@ body {
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
   padding: 20px;
-  backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 14px;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.2s ease;
 }
 
 .input-card:focus-within {
@@ -757,11 +746,10 @@ body {
 }
 
 .input-header label {
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
   white-space: nowrap;
 }
 
@@ -770,7 +758,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
   font-size: 0.80rem;
-  font-weight: 600;
+  font-weight: 750;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -866,18 +854,17 @@ body {
   border: none;
   border-radius: var(--radius-md);
   color: var(--accent-text);
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 750;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 18px var(--accent-glow);
+  transition: all 0.2s ease;
+  letter-spacing: -0.01em;
 }
 
 .primary-btn::before {
@@ -943,8 +930,8 @@ body {
   align-items: center;
   gap: 8px;
   padding: 9px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
   color: var(--text-secondary);
@@ -1078,7 +1065,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.10);
   color: var(--text-secondary);
   letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 /* Media Preview */
@@ -1245,7 +1231,6 @@ body {
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-tertiary);
-  text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
@@ -1365,7 +1350,6 @@ body {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-tertiary);
-  text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 12px;
 }
@@ -1543,7 +1527,6 @@ body {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
   letter-spacing: 0.5px;
-  text-transform: uppercase;
 }
 
 .format-item.recommended .format-badge {
@@ -1984,7 +1967,6 @@ body {
   font-weight: 800;
   padding: 1px 6px;
   border-radius: 4px;
-  text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
@@ -2172,11 +2154,10 @@ body {
   text-align: center;
   font-family: var(--font-sf);
   font-size: 0.80rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2.2px;
   color: var(--text-secondary);
   margin-bottom: 16px;
-  text-transform: uppercase;
 }
 
 .platforms-grid {
@@ -2231,7 +2212,7 @@ body {
 .platform-label {
   font-family: var(--font-sf);
   font-size: 0.78rem;
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: 0.8px;
   color: var(--text-primary);
   white-space: nowrap;
@@ -2331,7 +2312,9 @@ body {
 }
 
 @keyframes clipPing {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -2350,7 +2333,6 @@ body {
   letter-spacing: 0.8px;
   padding: 2px 7px;
   border-radius: var(--radius-full);
-  text-transform: uppercase;
 }
 
 .clip-header-title {
@@ -2489,18 +2471,22 @@ body {
   .clip-banner-inner {
     padding: 12px 12px;
   }
+
   .clip-banner-actions {
     gap: 8px;
   }
+
   .clip-btn-secondary {
     padding: 9px 10px;
     font-size: 0.78rem;
   }
+
   .clip-btn-primary {
     padding: 9px 12px;
     font-size: 0.8rem;
     gap: 5px;
   }
+
   .clip-btn-primary svg {
     width: 14px;
     height: 14px;
@@ -2601,7 +2587,6 @@ body {
   font-size: 0.74rem;
   font-weight: 700;
   color: var(--text-tertiary);
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
@@ -2720,7 +2705,6 @@ body {
   font-size: 0.76rem;
   font-weight: 700;
   color: var(--text-tertiary);
-  text-transform: uppercase;
   letter-spacing: 1px;
 }
 
@@ -2781,12 +2765,14 @@ body {
   background: #000000;
   border-color: #333333;
 }
+
 .amoled-preview .preview-mini-bar {
   height: 4px;
   width: 60%;
   background: #fff;
   border-radius: 2px;
 }
+
 .amoled-preview .preview-mini-box {
   height: 12px;
   width: 100%;
@@ -2799,12 +2785,14 @@ body {
   background: #0a0a0a;
   border-color: #262626;
 }
+
 .dark-preview .preview-mini-bar {
   height: 4px;
   width: 60%;
   background: #a3a3a3;
   border-radius: 2px;
 }
+
 .dark-preview .preview-mini-box {
   height: 12px;
   width: 100%;
@@ -2816,12 +2804,14 @@ body {
   background: #ffffff;
   border-color: #cbd5e1;
 }
+
 .light-preview .preview-mini-bar {
   height: 4px;
   width: 60%;
   background: #0f172a;
   border-radius: 2px;
 }
+
 .light-preview .preview-mini-box {
   height: 12px;
   width: 100%;
@@ -2836,6 +2826,7 @@ body {
   justify-content: center;
   color: #fff;
 }
+
 .system-preview svg {
   stroke: #a855f7;
 }
@@ -2962,7 +2953,7 @@ body {
   border-radius: var(--radius-sm);
   color: var(--text-tertiary);
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 750;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -2985,6 +2976,7 @@ body {
 .mode-tab.active {
   background: var(--bg-card-hover);
   color: var(--text-primary);
+  font-weight: 800;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
@@ -3347,7 +3339,6 @@ body {
   padding: 2px 7px;
   border-radius: var(--radius-full);
   cursor: pointer;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.2s ease;
 }
@@ -3476,9 +3467,21 @@ body {
 }
 
 @keyframes pinShake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-9px); }
-  40%, 80% { transform: translateX(9px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-9px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(9px);
+  }
 }
 
 .pin-dots-container.shake-error {
@@ -3622,11 +3625,11 @@ body {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
-.switch-control input:checked + .switch-slider {
+.switch-control input:checked+.switch-slider {
   background-color: var(--accent, #22c55e);
 }
 
-.switch-control input:checked + .switch-slider:before {
+.switch-control input:checked+.switch-slider:before {
   transform: translateX(20px);
   background-color: #0c0d0e;
 }
@@ -3648,7 +3651,6 @@ body {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-tertiary);
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 

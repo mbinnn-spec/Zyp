@@ -14,11 +14,22 @@ import com.getcapacitor.BridgeActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import com.getcapacitor.BridgeWebViewClient;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupNativeBridge();
+        setupMediaProxy();
         handleSendIntent(getIntent());
     }
 
@@ -27,6 +38,76 @@ public class MainActivity extends BridgeActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         handleSendIntent(intent);
+    }
+
+    private void setupMediaProxy() {
+        if (bridge != null) {
+            bridge.setWebViewClient(new BridgeWebViewClient(bridge) {
+                @Override
+                public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                    if (request != null && request.getUrl() != null) {
+                        String url = request.getUrl().toString();
+                        if (url.contains("akamaized.net") || url.contains("bilivideo.com") || url.contains("bstarstatic.com")) {
+                            try {
+                                URL targetUrl = new URL(url);
+                                HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.setConnectTimeout(8000);
+                                conn.setReadTimeout(12000);
+                                conn.setRequestProperty("Referer", "https://www.bilibili.tv/");
+                                conn.setRequestProperty("Origin", "https://www.bilibili.tv");
+                                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+
+                                Map<String, String> reqHeaders = request.getRequestHeaders();
+                                if (reqHeaders != null) {
+                                    for (Map.Entry<String, String> entry : reqHeaders.entrySet()) {
+                                        if ("range".equalsIgnoreCase(entry.getKey())) {
+                                            conn.setRequestProperty("Range", entry.getValue());
+                                        }
+                                    }
+                                }
+
+                                conn.connect();
+                                int responseCode = conn.getResponseCode();
+
+                                String mimeType = conn.getContentType();
+                                if (mimeType != null && mimeType.contains(";")) {
+                                    mimeType = mimeType.split(";")[0].trim();
+                                }
+                                if (mimeType == null || mimeType.isEmpty()) {
+                                    mimeType = url.contains(".m4s") || url.contains(".mp4") ? "video/mp4" : "*/*";
+                                }
+
+                                Map<String, String> respHeaders = new HashMap<>();
+                                respHeaders.put("Access-Control-Allow-Origin", "*");
+                                respHeaders.put("Access-Control-Allow-Headers", "*");
+                                for (Map.Entry<String, java.util.List<String>> entry : conn.getHeaderFields().entrySet()) {
+                                    if (entry.getKey() != null && entry.getValue() != null && !entry.getValue().isEmpty()) {
+                                        respHeaders.put(entry.getKey(), entry.getValue().get(0));
+                                    }
+                                }
+
+                                InputStream is = (responseCode >= 200 && responseCode < 400)
+                                    ? conn.getInputStream()
+                                    : conn.getErrorStream();
+
+                                return new WebResourceResponse(
+                                    mimeType,
+                                    "UTF-8",
+                                    responseCode,
+                                    conn.getResponseMessage() != null ? conn.getResponseMessage() : "OK",
+                                    respHeaders,
+                                    is
+                                );
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    return super.shouldInterceptRequest(view, request);
+                }
+            });
+        }
     }
 
     private void setupNativeBridge() {
@@ -45,6 +126,12 @@ public class MainActivity extends BridgeActivity {
                                 request.setMimeType(mimeType);
                             }
                             request.allowScanningByMediaScanner();
+
+                            // Ensure Bstation / Bilibili Akamai & Bilivideo CDN accepts the download request
+                            if (url != null && (url.contains("bilivideo") || url.contains("bilibili") || url.contains("akamaized") || url.contains("bstar"))) {
+                                request.addRequestHeader("Referer", "https://www.bilibili.tv/");
+                                request.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+                            }
 
                             DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                             if (dm != null) {

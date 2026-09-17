@@ -1,4 +1,4 @@
-import { extractTikTok, extractInstagram, extractTerabox, extractTwitter, extractYouTube, extractSpotify, extractUniversal, detectPlatform } from './extractors.js';
+import { extractTikTok, extractInstagram, extractTerabox, extractTwitter, extractYouTube, extractSpotify, extractBilibili, extractThreads, extractFacebook, extractPinterest, extractUniversal, detectPlatform } from './extractors.js';
 
 
 // Capacitor Plugins (Loaded safely with fallback for Web preview)
@@ -173,6 +173,36 @@ const resTitle = document.getElementById('res-title');
 const audioPlayerCard = document.getElementById('audio-player-card');
 const resAudio = document.getElementById('res-audio');
 const audioTitle = document.getElementById('audio-title');
+
+// Synchronize audio track for DASH platforms where video stream has separate audio (like Bstation)
+if (resVideo && resAudio) {
+  resVideo.addEventListener('play', () => {
+    if (resAudio && resAudio.src && typeof currentExtraction !== 'undefined' && currentExtraction?.platform === 'bilibili') {
+      if (Math.abs(resAudio.currentTime - resVideo.currentTime) > 0.3) {
+        resAudio.currentTime = resVideo.currentTime;
+      }
+      resAudio.play().catch(() => {});
+    }
+  });
+
+  resVideo.addEventListener('pause', () => {
+    if (resAudio && typeof currentExtraction !== 'undefined' && currentExtraction?.platform === 'bilibili') {
+      resAudio.pause();
+    }
+  });
+
+  resVideo.addEventListener('seeking', () => {
+    if (resAudio && typeof currentExtraction !== 'undefined' && currentExtraction?.platform === 'bilibili') {
+      resAudio.currentTime = resVideo.currentTime;
+    }
+  });
+
+  resVideo.addEventListener('volumechange', () => {
+    if (resAudio && typeof currentExtraction !== 'undefined' && currentExtraction?.platform === 'bilibili') {
+      resAudio.volume = resVideo.muted ? 0 : resVideo.volume;
+    }
+  });
+}
 
 const formatList = document.getElementById('format-list');
 const carouselSection = document.getElementById('carousel-section');
@@ -605,16 +635,18 @@ function handleInputChange() {
     const platform = detectPlatform(url);
     if (platform && platform !== 'universal') {
       const names = {
-        tiktok: 'TIKTOK',
-        instagram: 'INSTAGRAM',
-        terabox: 'PRIVATE CLOUD',
-        youtube: 'YOUTUBE',
-        twitter: 'TWITTER',
-        spotify: 'SPOTIFY',
-        facebook: 'FACEBOOK',
-        pinterest: 'PINTEREST'
+        tiktok: 'TikTok',
+        instagram: 'Instagram',
+        threads: 'Threads',
+        terabox: 'Private Cloud',
+        youtube: 'YouTube',
+        twitter: 'Twitter',
+        spotify: 'Spotify',
+        facebook: 'Facebook',
+        pinterest: 'Pinterest',
+        bilibili: 'Bilibili'
       };
-      detectedName.textContent = names[platform] || platform.toUpperCase();
+      detectedName.textContent = names[platform] || (platform.charAt(0).toUpperCase() + platform.slice(1));
       detectedBar.classList.remove('hidden');
       return;
     }
@@ -764,6 +796,10 @@ async function startBatchProcess() {
       iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`;
     } else if (platform === 'spotify') {
       iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.208-2.348-1.435-5.304-1.76-8.785-.964-.333.076-.665-.13-.742-.464-.076-.334.13-.666.464-.742 3.808-.87 7.076-.496 9.712 1.115.294.18.386.563.208.847zm1.225-2.723c-.226.368-.71.482-1.077.256-2.687-1.652-6.785-2.131-9.965-1.166-.413.126-.85-.107-.975-.52-.126-.414.107-.851.52-.976 3.632-1.103 8.147-.568 11.24 1.33.368.226.483.71.257 1.076zm.105-2.836C14.693 8.948 9.387 8.77 6.304 9.707c-.494.15-1.02-.13-1.17-.624-.15-.494.13-1.02.624-1.17 3.532-1.072 9.404-.866 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.282.327z"/></svg>`;
+    } else if (platform === 'threads') {
+      iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.026-6.34-1.157-8.198-3.361-2.008-2.382-2.946-5.88-2.79-10.398.156-4.512 1.399-7.986 3.693-10.327C6.837 2.012 9.47.882 12.709.882c3.155 0 5.767 1.092 7.765 3.245 1.94 2.091 2.947 4.965 2.993 8.544l.006.495h-3.473l-.007-.442c-.066-2.584-.73-4.582-1.975-5.938-1.258-1.371-2.981-2.072-5.122-2.072-2.38 0-4.225.867-5.485 2.578-1.464 1.986-2.18 4.793-2.128 8.344.053 3.551.848 6.273 2.364 8.09 1.341 1.606 3.284 2.428 5.775 2.447 2.656-.02 4.606-.949 5.795-2.76.716-1.09 1.144-2.564 1.272-4.382-1.398-.363-2.822-.647-4.232-.846-2.992-.421-5.352-.083-7.015 1.004-1.636 1.07-2.502 2.686-2.502 4.673 0 1.902.798 3.525 2.308 4.694 1.488 1.152 3.498 1.745 5.811 1.714 2.671-.036 4.908-.944 6.649-2.7 1.545-1.558 2.464-3.69 2.73-6.338.486.291.907.632 1.259 1.018 1.043 1.143 1.64 2.64 1.776 4.45l.024.32c-.378 3.535-1.688 6.447-3.894 8.655-2.222 2.223-5.228 3.39-8.937 3.468zm.13-7.608c-1.32.018-2.427-.29-3.203-.89-.747-.577-1.125-1.385-1.125-2.406 0-1.01.442-1.84 1.314-2.467.925-.666 2.33-.918 4.175-.75 1.054.096 2.115.27 3.155.518-.284 3.73-2.316 5.965-4.316 5.995z"/></svg>`;
+    } else if (platform === 'bilibili') {
+      iconSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.813 4.653h.854c1.51 0 2.733 1.224 2.733 2.734v10.14c0 1.51-1.223 2.734-2.733 2.734H5.333C3.823 20.261 2.6 19.037 2.6 17.527V7.387c0-1.51 1.223-2.734 2.733-2.734h.797l-1.92-1.92a.846.846 0 0 1 1.196-1.196L8.43 4.653h7.14l3.024-3.116a.846.846 0 1 1 1.196 1.196l-1.977 1.92zm-12.48 2.734a.854.854 0 0 0-.853.853v10.14c0 .47.383.854.853.854h13.334c.47 0 .853-.384.853-.854V8.24a.854.854 0 0 0-.853-.853H5.333zm2.56 3.84a1.28 1.28 0 1 1 0 2.56 1.28 1.28 0 0 1 0-2.56zm8.214 0a1.28 1.28 0 1 1 0 2.56 1.28 1.28 0 0 1 0-2.56z"/></svg>`;
     } else {
       iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>`;
     }
@@ -772,7 +808,7 @@ async function startBatchProcess() {
       <div class="batch-item-left">
         <div class="batch-item-icon">${iconSvg}</div>
         <div class="batch-item-meta">
-          <span class="batch-item-title">${platform.toUpperCase()} #${idx + 1}</span>
+          <span class="batch-item-title">${(platform.charAt(0).toUpperCase() + platform.slice(1))} #${idx + 1}</span>
           <span class="batch-item-url">${url}</span>
         </div>
       </div>
@@ -817,6 +853,14 @@ async function startBatchProcess() {
         data = await extractSpotify(cleanUrl);
       } else if (current.platform === 'terabox') {
         data = await extractTerabox(cleanUrl);
+      } else if (current.platform === 'bilibili') {
+        data = await extractBilibili(cleanUrl);
+      } else if (current.platform === 'threads') {
+        data = await extractThreads(cleanUrl);
+      } else if (current.platform === 'facebook') {
+        data = await extractFacebook(cleanUrl);
+      } else if (current.platform === 'pinterest') {
+        data = await extractPinterest(cleanUrl);
       } else {
         data = await extractUniversal(cleanUrl, current.platform);
       }
@@ -922,6 +966,14 @@ async function handleFetch() {
       data = await extractSpotify(cleanUrl);
     } else if (platform === 'terabox') {
       data = await extractTerabox(cleanUrl);
+    } else if (platform === 'bilibili') {
+      data = await extractBilibili(cleanUrl);
+    } else if (platform === 'threads') {
+      data = await extractThreads(cleanUrl);
+    } else if (platform === 'facebook') {
+      data = await extractFacebook(cleanUrl);
+    } else if (platform === 'pinterest') {
+      data = await extractPinterest(cleanUrl);
     } else {
       data = await extractUniversal(cleanUrl, platform);
     }
@@ -953,21 +1005,41 @@ function renderResult(data) {
   }
 
   // Tag
-  resPlatformTag.textContent = data.platform === 'terabox' ? 'PRIVATE CLOUD' : (data.platform || 'VIDEO').toUpperCase();
+  resPlatformTag.textContent = data.platform === 'terabox' ? 'Private Cloud' : (data.platform ? data.platform.charAt(0).toUpperCase() + data.platform.slice(1) : 'Video');
 
   // Title
   resTitle.textContent = data.title || 'Video Media';
 
   // Inline Video Player / Thumbnail Preview
-  if (data.previewVideo) {
+  let videoSrc = data.previewVideo;
+  let audioSrc = data.audioUrl;
+
+  // On web browser development, rewrite Bstation CDN to Vite proxy
+  if (typeof window !== 'undefined' && !window.AndroidBridge) {
+    if (videoSrc) {
+      if (videoSrc.startsWith('https://upos-bstar1-mirrorakam.akamaized.net')) {
+        videoSrc = videoSrc.replace('https://upos-bstar1-mirrorakam.akamaized.net', '/bstar-akam-proxy');
+      } else if (videoSrc.startsWith('https://upos-sz-mirrorcosbstar1.bilivideo.com')) {
+        videoSrc = videoSrc.replace('https://upos-sz-mirrorcosbstar1.bilivideo.com', '/bstar-bili-proxy');
+      }
+    }
+    if (audioSrc) {
+      if (audioSrc.startsWith('https://upos-bstar1-mirrorakam.akamaized.net')) {
+        audioSrc = audioSrc.replace('https://upos-bstar1-mirrorakam.akamaized.net', '/bstar-akam-proxy');
+      } else if (audioSrc.startsWith('https://upos-sz-mirrorcosbstar1.bilivideo.com')) {
+        audioSrc = audioSrc.replace('https://upos-sz-mirrorcosbstar1.bilivideo.com', '/bstar-bili-proxy');
+      }
+    }
+  }
+
+  if (videoSrc) {
     resVideo.removeAttribute('src');
-    resVideo.setAttribute('referrerpolicy', 'no-referrer');
     if (data.thumbnail) {
       resVideo.poster = data.thumbnail;
     } else {
       resVideo.removeAttribute('poster');
     }
-    resVideo.src = data.previewVideo;
+    resVideo.src = videoSrc;
     resVideo.classList.remove('hidden');
     resThumb.classList.add('hidden');
     resVideo.load();
@@ -991,10 +1063,10 @@ function renderResult(data) {
   }
 
   // Inline Audio Player
-  if (data.audioUrl) {
+  if (audioSrc) {
     audioPlayerCard.classList.remove('hidden');
-    resAudio.src = data.audioUrl;
-    audioTitle.textContent = data.audioTitle || 'Soundtrack Original';
+    resAudio.src = audioSrc;
+    audioTitle.textContent = data.audioTitle || (data.platform === 'bilibili' ? 'Soundtrack Original Bstation' : 'Soundtrack Original');
   } else {
     audioPlayerCard.classList.add('hidden');
   }
@@ -1240,7 +1312,16 @@ async function startDownload(format, parentData, silent = false) {
 
   try {
     try {
-      const response = await fetch(directUrl, {
+      let fetchUrl = directUrl;
+      if (typeof window !== 'undefined') {
+        if (directUrl.startsWith('https://upos-bstar1-mirrorakam.akamaized.net')) {
+          fetchUrl = directUrl.replace('https://upos-bstar1-mirrorakam.akamaized.net', '/bstar-akam-proxy');
+        } else if (directUrl.startsWith('https://upos-sz-mirrorcosbstar1.bilivideo.com')) {
+          fetchUrl = directUrl.replace('https://upos-sz-mirrorcosbstar1.bilivideo.com', '/bstar-bili-proxy');
+        }
+      }
+
+      const response = await fetch(fetchUrl, {
         signal: downloadAbortController.signal,
         headers: { 'Accept': '*/*' }
       });
@@ -1652,7 +1733,7 @@ function renderGalleryList() {
         <div class="hist-info">
           <span class="hist-title" title="${item.title || item.filename}">${item.title || item.filename}</span>
           <div class="hist-meta-row">
-            <span class="hist-badge ${item.platform === 'terabox' ? 'tb' : ''}">${item.platform ? item.platform.toUpperCase() : 'MEDIA'}</span>
+            <span class="hist-badge ${item.platform === 'terabox' ? 'tb' : ''}">${item.platform ? (item.platform.charAt(0).toUpperCase() + item.platform.slice(1)) : 'Media'}</span>
             <span class="hist-badge">${item.format || (isVideo ? 'MP4' : isAudio ? 'MP3' : 'FILE')}</span>
             <span class="hist-date">${item.date}</span>
           </div>
@@ -1708,7 +1789,7 @@ function playGalleryItem(item) {
   if (isVideo || isAudio) {
     currentPlayingItem = item;
     if (offlinePlayerTitle) offlinePlayerTitle.textContent = item.title || item.filename;
-    if (offlinePlayerBadge) offlinePlayerBadge.textContent = (item.platform || 'MEDIA').toUpperCase();
+    if (offlinePlayerBadge) offlinePlayerBadge.textContent = item.platform ? (item.platform.charAt(0).toUpperCase() + item.platform.slice(1)) : 'Media';
     if (offlineVideo) {
       offlineVideo.src = item.url || '';
       offlineVideo.play().catch(e => console.log('Autoplay prevented:', e));
@@ -1916,17 +1997,17 @@ function showClipboardBanner(url, platform) {
   if (!clipboardBanner) return;
   detectedClipUrl = url;
   const names = {
-    tiktok: 'TIKTOK',
-    instagram: 'INSTAGRAM',
-    terabox: 'PRIVATE CLOUD',
-    youtube: 'YOUTUBE',
-    twitter: 'TWITTER',
-    spotify: 'SPOTIFY',
-    facebook: 'FACEBOOK',
-    pinterest: 'PINTEREST'
+    tiktok: 'Tiktok',
+    instagram: 'Instagram',
+    terabox: 'Private Cloud',
+    youtube: 'Youtube',
+    twitter: 'Twitter',
+    spotify: 'Spotify',
+    facebook: 'Facebook',
+    pinterest: 'Pinterest'
   };
   if (clipPlatformBadge) {
-    clipPlatformBadge.textContent = names[platform] || platform.toUpperCase();
+    clipPlatformBadge.textContent = names[platform] || (platform.charAt(0).toUpperCase() + platform.slice(1));
   }
   if (clipUrlText) {
     clipUrlText.textContent = url;

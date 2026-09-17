@@ -4,17 +4,25 @@ Aplikasi pengunduh media sosial yang cepat, ringan, dan mudah digunakan untuk An
 
 ---
 
-## Fitur
+## Fitur Utama & Platform
 
 - **TikTok**: Unduh video HD tanpa watermark, audio MP3, dan slide foto.
 - **Instagram**: Unduh Reels, video feed, dan postingan multi-foto (carousel).
+- **Pinterest**: Unduh Video Pin MP4 kualitas HD 720p, Foto Pin resolusi asli (*Ultra HD Originals*), dan gambar sampul (*cover*).
+- **Facebook**: Unduh video feed, Facebook Reels, dan Facebook Watch (kualitas HD/SD) serta audio MP3.
 - **YouTube**: Unduh video reguler dan YouTube Shorts dalam kualitas HD.
 - **Twitter / X**: Unduh video HD dan foto resolusi asli.
-- **Unduh Sekaligus (Multi-Link)**: Masukkan beberapa tautan sekaligus untuk diunduh secara berurutan.
-- **Deteksi Otomatis**: Mendeteksi tautan yang disalin ke clipboard secara instan saat membuka aplikasi.
-- **Pemutar Media Bawaan**: Putar video atau dengarkan audio langsung di dalam aplikasi sebelum mengunduh.
-- **Pilihan Tema**: Mendukung tema AMOLED, Gelap (Dark), dan Terang (Light).
-- **Simpan ke Galeri**: Hasil unduhan otomatis tersimpan di penyimpanan perangkat dan muncul di galeri.
+- **Spotify**: Unduh audio musik dari tautan lagu Spotify.
+- **Threads**: Unduh foto, video, dan media postingan Threads.
+- **Bilibili (Bstation)**: Unduh video anime / kreator dan soundtrack audio bawaan.
+- **Unduh Sekaligus (Multi-Link Batch)**: Masukkan 2 hingga 10 tautan sekaligus untuk diunduh secara berurutan dan otomatis.
+- **Kunci Privasi Galeri (Vault)**: Amankan file unduhan dengan proteksi PIN 4-digit yang otomatis terkunci saat aplikasi diminimalkan.
+- **Deteksi Otomatis Clipboard**: Deteksi instan saat tautan media disalin ke clipboard dengan banner konfirmasi cepat.
+- **Pemutar Media Bawaan**: Pratinjau video dan audio langsung di dalam aplikasi sebelum mengunduh.
+- **Personalisasi Tema**: Pilihan tema AMOLED Black, Dark Obsidian, dan Clean Light dengan berbagai warna aksen modern.
+- **Simpan Otomatis ke Galeri**: Terintegrasi langsung dengan Android DownloadManager untuk penyimpanan aman di penyimpanan lokal.
+
+Untuk riwayat lengkap pembaruan setiap versi, silakan lihat [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
